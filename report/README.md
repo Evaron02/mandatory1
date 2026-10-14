@@ -1,1 +1,3 @@
-Put the report here either as a notebook or as a pdf.
+## Neumann wave animation
+
+![Neumann wave with mx = my = 2](neumannwave.gif)

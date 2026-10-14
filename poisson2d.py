@@ -2,6 +2,7 @@ import numpy as np
 import sympy as sp
 from scipy import sparse
 from scipy.sparse import linalg as sparse_linalg
+from scipy.interpolate import RectBivariateSpline
 
 from poisson import Poisson
 
@@ -91,7 +92,7 @@ class Poisson2D:
         """
         xij, yij = self.create_mesh(N)
         A = self.laplace(N)
-        b = self.meshfunction(f, xij, yij).ravel()
+        b = self.meshfunction(f, xij, yij).astype(float).ravel()
         boundary_indices = self.get_boundary_indices(N)
 
         for i in boundary_indices:
@@ -202,7 +203,11 @@ class Poisson2D:
         The value of u(x, y)
 
         """
-        raise NotImplementedError("The eval method is not implemented yet.")
+        N = U.shape[0] - 1
+        coordinates = self.p.create_mesh(N)
+        interpolator = RectBivariateSpline(coordinates, coordinates, U)
+        return interpolator.ev(x, y).item()
+
 
 
 def test_convergence_poisson2d():
